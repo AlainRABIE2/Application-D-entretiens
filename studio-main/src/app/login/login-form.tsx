@@ -21,7 +21,10 @@ export default function LoginForm() {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
     setLoading(false);
     if (error) {
       setError(error.message || "Email ou mot de passe invalide.");
@@ -57,7 +60,7 @@ export default function LoginForm() {
               required
               placeholder="utilisateur@exemple.com"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               className="mt-2"
             />
           </div>
@@ -75,7 +78,7 @@ export default function LoginForm() {
               autoComplete="current-password"
               required
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               className="mt-2"
             />
           </div>

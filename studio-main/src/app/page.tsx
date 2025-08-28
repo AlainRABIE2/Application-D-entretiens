@@ -16,7 +16,7 @@ export default function Home() {
         const { data: listener } = supabase.auth.onAuthStateChange(() => {
             getSession();
         });
-        return () => {
+        return () => {  
             listener?.subscription.unsubscribe();
         };
     }, []);
