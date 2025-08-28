@@ -1,12 +1,28 @@
+"use client";
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { logout } from '@/lib/actions';
-import { getUser } from '@/lib/auth';
 import { UserCircle, LogOut } from 'lucide-react';
 import { ThemeToggle } from './theme-toggle';
+import { supabase } from '@/lib/supabaseClient';
 
-export default async function MenuBar() {
-  const user = await getUser();
+export default function MenuBar() {
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getSession = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUserEmail(data.user?.email ?? null);
+    };
+    getSession();
+    const { data: listener } = supabase.auth.onAuthStateChange(() => {
+      getSession();
+    });
+    return () => {
+      listener?.subscription.unsubscribe();
+    };
+  }, []);
 
   return (
     <header className="bg-card shadow-sm sticky top-0 z-50">
@@ -19,11 +35,11 @@ export default async function MenuBar() {
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
             <ThemeToggle />
-            {user ? (
+            {userEmail ? (
               <>
                 <div className="flex items-center gap-2">
                   <UserCircle className="h-6 w-6 text-muted-foreground" />
-                  <span className="hidden sm:inline text-sm font-medium">{user.username}</span>
+                  <span className="hidden sm:inline text-sm font-medium">{userEmail}</span>
                 </div>
                 <form action={logout}>
                   <Button variant="ghost" size="sm" className="gap-2">

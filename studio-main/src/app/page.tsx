@@ -1,15 +1,25 @@
-import { getUser } from '@/lib/auth';
+"use client";
+import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { CheckCircle } from 'lucide-react';
-import { redirect } from 'next/navigation';
+import { supabase } from '@/lib/supabaseClient';
 
-export default async function Home() {
-    const user = await getUser();
+export default function Home() {
+    const [email, setEmail] = useState<string | null>(null);
 
-    if (!user) {
-        // This should be handled by middleware, but as a fallback:
-        redirect('/login');
-    }
+    useEffect(() => {
+        const getSession = async () => {
+            const { data } = await supabase.auth.getUser();
+            setEmail(data.user?.email ?? null);
+        };
+        getSession();
+        const { data: listener } = supabase.auth.onAuthStateChange(() => {
+            getSession();
+        });
+        return () => {
+            listener?.subscription.unsubscribe();
+        };
+    }, []);
 
     return (
         <div className="flex min-h-full items-center justify-center p-4 sm:p-6 lg:p-8">
@@ -22,7 +32,10 @@ export default async function Home() {
                 </CardHeader>
                 <CardContent>
                     <p className="text-muted-foreground">
-                        Vous êtes connecté en tant que <span className="font-medium text-primary">{user?.username}</span>.
+                        {email
+                            ? <>Vous êtes connecté en tant que <span className="font-medium text-primary">{email}</span>.</>
+                            : <>Vous n'êtes pas connecté.</>
+                        }
                     </p>
                 </CardContent>
             </Card>
