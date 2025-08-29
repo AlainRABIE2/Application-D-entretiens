@@ -30,7 +30,7 @@ export default function MenuBar() {
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <Link href="/" className="text-xl font-bold text-primary transition-opacity hover:opacity-80">
-              entretiens
+              Entretiens - Alain RABIE
             </Link>
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
