@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { logout } from '@/lib/actions';
+// import { logout } from '@/lib/actions';
 import { UserCircle, LogOut } from 'lucide-react';
 import { ThemeToggle } from './theme-toggle';
 import { supabase } from '@/lib/supabaseClient';
@@ -41,12 +41,19 @@ export default function MenuBar() {
                   <UserCircle className="h-6 w-6 text-muted-foreground" />
                   <span className="hidden sm:inline text-sm font-medium">{userEmail}</span>
                 </div>
-                <form action={logout}>
-                  <Button variant="ghost" size="sm" className="gap-2">
-                    <LogOut className="h-4 w-4" />
-                    <span className="hidden sm:inline">Déconnexion</span>
-                  </Button>
-                </form>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="gap-2"
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    setUserEmail(null);
+                    window.location.href = '/login';
+                  }}
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className="hidden sm:inline">Déconnexion</span>
+                </Button>
               </>
             ) : (
               <>
