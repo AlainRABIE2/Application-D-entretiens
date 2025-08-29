@@ -10,7 +10,6 @@ export default function Home() {
     await supabase.auth.signOut();
     setUser(null);
     setRole(null);
-    window.location.reload(); // Force le rechargement pour réinitialiser tous les états
   };
   // Suppression d'utilisateur
   const handleDeleteUser = async (id: number) => {
